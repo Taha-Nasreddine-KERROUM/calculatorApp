@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         MaterialButton button = (MaterialButton) view;
         String buttonText = button.getText().toString();
         String dataToCalculate = solutionText.getText().toString();
-        String oprators = "+-*/)";
+        String operators = "+-*/)";
+        String operations = "+-*/";
+        boolean oprOverOper = false;
 
         // Initialize or maintain bracket and dot counts
         int bracketCount = countBrackets(dataToCalculate, buttonText.charAt(0));
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // Handle multiplication when inserting parentheses or digits after a closing parenthesis
             if ((buttonText.equals("(") && !dataToCalculate.isEmpty() && Character.isDigit(dataToCalculate.charAt(dataToCalculate.length() - 1))) ||
-                    (!oprators.contains(buttonText) && !dataToCalculate.isEmpty() && bracketCount >= 0 && dataToCalculate.charAt(dataToCalculate.length() - 1) == ')')) {
+                    (!operators.contains(buttonText) && !dataToCalculate.isEmpty() && bracketCount >= 0 && dataToCalculate.charAt(dataToCalculate.length() - 1) == ')')) {
                 dataToCalculate += "*";
             }
 
@@ -162,17 +164,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dataToCalculate += "0"; // Prevents invalid numbers like "0."
             }
 
+            if (!dataToCalculate.isEmpty()
+                    && operations.contains(buttonText)
+                    && operations.contains("" + dataToCalculate.charAt(dataToCalculate.length() - 1))) {
+                oprOverOper = true;
+            } else if (operations.contains(buttonText) && dataToCalculate.isEmpty() && !buttonText.equals("-")){
+                oprOverOper = true;
+            }else {
+                oprOverOper = false;
+            }
+
+
             // Append the buttonText only if valid bracket and dot counts
-            if (bracketCount >= 0 && dotCount <= 1) {
+            if (bracketCount >= 0 && dotCount <= 1 && !oprOverOper) {
                 dataToCalculate += buttonText;
             }
         }
 
         solutionText.setText(dataToCalculate);
 
-        String finalResult = getResult(dataToCalculate);
-        if (!finalResult.equals("Error")) {
-            resultText.setText(finalResult);
+        if (!dataToCalculate.isEmpty()) {
+            String finalResult = getResult(dataToCalculate);
+            if (!finalResult.equals("Error")) {
+                resultText.setText(finalResult);
+            }
+        } else {
+            solutionText.setText("0");
+            resultText.setText("0");
         }
     }
 
