@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String operations = "+-*/";
         boolean oprOverOper = false;
 
+
         // Initialize or maintain bracket and dot counts
         int bracketCount = countBrackets(dataToCalculate, buttonText.charAt(0));
         int dotCount = countDots(dataToCalculate);
